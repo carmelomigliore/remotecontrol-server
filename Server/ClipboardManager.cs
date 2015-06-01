@@ -76,6 +76,60 @@ namespace Server
             public IntPtr shi502_security_descriptor;
         }
 
+        [DllImport("mpr.dll")]
+        private static extern int WNetAddConnection2(NetResource netResource,
+            string password, string username, int flags);
+
+        [DllImport("mpr.dll")]
+        private static extern int WNetCancelConnection2(string name, int flags,
+            bool force);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public class NetResource
+        {
+            public ResourceScope Scope;
+            public ResourceType ResourceType;
+            public ResourceDisplaytype DisplayType;
+            public int Usage;
+            public string LocalName;
+            public string RemoteName;
+            public string Comment;
+            public string Provider;
+        }
+
+        public enum ResourceScope : int
+        {
+            Connected = 1,
+            GlobalNetwork,
+            Remembered,
+            Recent,
+            Context
+        };
+
+        public enum ResourceType : int
+        {
+            Any = 0,
+            Disk = 1,
+            Print = 2,
+            Reserved = 8,
+        }
+
+        public enum ResourceDisplaytype : int
+        {
+            Generic = 0x0,
+            Domain = 0x01,
+            Server = 0x02,
+            Share = 0x03,
+            File = 0x04,
+            Group = 0x05,
+            Network = 0x06,
+            Root = 0x07,
+            Shareadmin = 0x08,
+            Directory = 0x09,
+            Tree = 0x0a,
+            Ndscontainer = 0x0b
+        }
+
         public void InitializeShare()
         {
             SHARE_TYPE type;
@@ -109,6 +163,28 @@ namespace Server
             }
         }
 
+        public void AddConnection(object ip)
+        {
+            var netResource = new NetResource()
+            {
+                Scope = ResourceScope.GlobalNetwork,
+                ResourceType = ResourceType.Disk,
+                DisplayType = ResourceDisplaytype.Share,
+                RemoteName = "\\\\" + (string)ip + "\\C"
+            };
+
+            var result = WNetAddConnection2(
+            netResource,
+            null,
+            null,
+            0x00000004 | 0x00000008 | 0x00000010);
+
+            if (result != 0)
+            {
+                Console.WriteLine("Result not zero: " + result);
+            }
+        }
+
         public void SetClipboard(string Ip, Object obj)
         {
             try
@@ -124,11 +200,10 @@ namespace Server
                         Console.WriteLine(format);
                         dataObj.SetData(format, data[i]);
                     }
-                    Clipboard.SetDataObject(dataObj);
-
-                    if (Clipboard.ContainsFileDropList())
+                    if (dataObj.ContainsFileDropList())
                     {
-                        StringCollection files = Clipboard.GetFileDropList();
+                        StringCollection files = dataObj.GetFileDropList();
+                        dataObj = new DataObject();
                         StringCollection adjusted = new StringCollection();
                         foreach (string f in files)
                         {
@@ -143,8 +218,11 @@ namespace Server
                                 adjusted.Add(f);
                             }
                         }
-                        Clipboard.SetFileDropList(adjusted);
+                        dataObj.SetFileDropList(adjusted);
                     }
+                    Clipboard.SetDataObject(dataObj);
+
+                   
                 }
             }
             catch (Exception e)
