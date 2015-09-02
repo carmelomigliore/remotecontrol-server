@@ -2,11 +2,15 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="129.105" Width="171.267"
-        WindowStyle="SingleBorderWindow"
-        WindowState="Normal"
+        WindowStyle="None"
+        Topmost="True"
+        AllowsTransparency="True"
+        WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
+        Background="#00000000" Deactivated="Window_Deactivated"
        >
     <Grid>
+        <Rectangle x:Name="UnderControl" Fill="#00000000" Stroke="Red" StrokeThickness="0"/>
 
     </Grid>
 </Window>

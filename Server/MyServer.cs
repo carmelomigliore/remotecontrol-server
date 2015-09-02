@@ -133,6 +133,10 @@ namespace Server
                                     {
                                         _tcpClient.GetStream().Write(clip,0,clip.Length);
                                     }
+                                    Window.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        Window.UnderControl.StrokeThickness = 0;
+                                    }));
                                     break;
                                 case 2:
                                     try
@@ -157,6 +161,7 @@ namespace Server
                                                Window.Dispatcher.Invoke( new Action(() =>
                                                {
                                                    _clipboardManager.SetClipboard(((IPEndPoint) _tcpClient.Client.RemoteEndPoint).Address.ToString(), obj);
+                                                   Window.UnderControl.StrokeThickness = 12;
                                                }));
                                             }
                                         }

@@ -177,7 +177,7 @@ namespace Server
             netResource,
             null,
             null,
-            0x00000004 | 0x00000008 | 0x00000010);
+            0x00000004 | 0x00000008 | 0x00000010 | 0x1000);
 
             if (result != 0)
             {
