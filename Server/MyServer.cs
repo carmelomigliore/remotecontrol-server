@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.DirectoryServices.AccountManagement;
+using System.IO;
 using System.Linq.Expressions;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
@@ -83,37 +84,69 @@ namespace Server
                             switch (command)
                             {
                                 case 0: // LOGIN
+                                    Console.WriteLine("Mannaggia quel bastardo di padre pio");
                                     // ReSharper disable once PossibleNullReferenceException
                                     string currentUserName =
                                         System.Security.Principal.WindowsIdentity.GetCurrent()
                                             .Name.Split(new char[] {'\\'})[1];
+                                    Console.WriteLine("Mannaggia quel bastardo di gianpaolo");
                                     string receivedUserName = streamReader.ReadLine();
+                                    Console.WriteLine("Mannaggia quel bastardo di geova");
                                     string domain = streamReader.ReadLine();
+                                    Console.WriteLine("Mannaggia quei coglioni di medjugorie");
                                     Aes aes = new AesCryptoServiceProvider();
                                     aes.Key = derivedKey;
                                     byte[] bytes = new byte[aes.BlockSize/8];
+                                    Console.WriteLine("Mannaggia quel bastardo dei tre pastorelli");
                                     bytes.Initialize();
                                     System.Buffer.BlockCopy(currentUserName.ToCharArray(), 0, bytes, 0,
                                         bytes.Length > currentUserName.Length*sizeof (char)
                                             ? currentUserName.Length*sizeof (char)
                                             : bytes.Length);
-
+                                    Console.WriteLine("Mannaggia quel bastardo di fatima " + currentUserName);
                                     aes.IV = bytes;
                                     MemoryStream ms = new MemoryStream(64);
                                     ICryptoTransform encryptor = aes.CreateDecryptor(aes.Key, aes.IV);
                                     CryptoStream csEncrypt = new CryptoStream(ms, encryptor,
                                         CryptoStreamMode.Write);
-                                    byte[] buffer = new byte[256];
-                                    int length = _tcpClient.GetStream().Read(buffer, 0, 256);
-                                    csEncrypt.Write(buffer, 0, length);
+                                    Console.WriteLine("Mannaggia quel cane del clero");
+
+                                    
+                                    Console.WriteLine("bastardo del signore");
+                                    //int passSize = Int32.Parse(streamReader.ReadLine());
+                                    //Console.WriteLine("Diaccio " + passSize);
+                                    string encpassword = streamReader.ReadLine();
+                                    byte[] buffer = Convert.FromBase64String(encpassword);
+                                   /*int length = _tcpClient.GetStream().Read(buffer, 0, 256);*/
+                                    Console.WriteLine("Masalaccio");
+                                    csEncrypt.Write(buffer, 0, buffer.Length);
+                                    Console.WriteLine("cristaccio");
                                     csEncrypt.Flush();
                                     csEncrypt.Close();
+                                    Console.WriteLine("Mannaggia quel bastardo di giovanardi");
                                     string password = Encoding.UTF8.GetString(ms.ToArray());
-                                    IntPtr th = IntPtr.Zero;
+                                 //   IntPtr th = IntPtr.Zero;
 
-                                    _authorized = LogonUser(receivedUserName, domain, password, 2, 0, ref th);
+                                   // _authorized = LogonUser(receivedUserName, domain, password, 3, 0, ref th);
+                                    
+                                 Console.WriteLine("Mannaggia la madonna " + password);
+
+                                  PrincipalContext pc = new PrincipalContext(ContextType.Machine,null);
+                                   Console.WriteLine("Mannaggia il cristo");
+                                   _authorized = pc.ValidateCredentials(receivedUserName, password);
+                                    Console.WriteLine("Mannaggia dio");
+
+
+
+                                /* Window.Dispatcher.Invoke(new Action(() =>
+                                    {
+                                        MessageBox.Show("Gesu: " + _authorized);
+                                    }));*/
+                                    //_authorized = true;
+                                    Console.WriteLine("mannaggia cristo: "+_authorized);
                                     byte[] auth = BitConverter.GetBytes(_authorized);
                                     _tcpClient.GetStream().Write(auth, 0, sizeof (bool));
+                                    _tcpClient.GetStream().Flush();
                                     if (_authorized)
                                     {
                                         _clipboardManager = new ClipboardManager();
