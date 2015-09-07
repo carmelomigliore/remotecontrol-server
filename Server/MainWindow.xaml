@@ -7,7 +7,7 @@
         AllowsTransparency="True"
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen"
-        Background="#00000000" Deactivated="Window_Deactivated"
+        Background="#00000000" Deactivated="Window_Deactivated" ShowInTaskbar="False"
        >
     <Grid>
         <Rectangle x:Name="UnderControl" Fill="#00000000" Stroke="Red" StrokeThickness="0"/>

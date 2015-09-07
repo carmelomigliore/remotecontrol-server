@@ -24,9 +24,9 @@ namespace Server
     {
         private MyServer s;
 
-        public MainWindow()
+        public MainWindow(int port)
         {
-            s = new MyServer();
+            s = new MyServer(port);
             s.Window = this;
             InitializeComponent();
         }
@@ -36,6 +36,13 @@ namespace Server
         {
             this.Topmost = true;
             this.Activate();
+        }
+
+        public void Stop()
+        {
+            s.Stop();
+            s = null;
+            this.Close();
         }
 
 
