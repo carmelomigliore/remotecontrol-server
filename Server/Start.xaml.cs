@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.AccountManagement;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace Server
     {
         public MainWindow Window { get; set; }
         private System.Windows.Forms.NotifyIcon _trayIcon;
+        //public static PrincipalContext pc = new PrincipalContext(ContextType.Machine, null);
         public Start()
         {
             InitializeComponent();

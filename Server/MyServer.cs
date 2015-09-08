@@ -132,16 +132,16 @@ namespace Server
                                         csEncrypt.Close();
                                         Console.WriteLine("Mannaggia quel bastardo di giovanardi");
                                         string password = Encoding.UTF8.GetString(ms.ToArray());
-                                        //   IntPtr th = IntPtr.Zero;
+                                        IntPtr th = IntPtr.Zero;
 
-                                        // _authorized = LogonUser(receivedUserName, domain, password, 3, 0, ref th);
+                                         _authorized = LogonUser(receivedUserName, domain, password, 3, 0, ref th);
 
-                                        Console.WriteLine("Mannaggia la madonna " + password);
+                                        Console.WriteLine("Mannaggia la madonna " + password + " " + receivedUserName);
 
-                                        PrincipalContext pc = new PrincipalContext(ContextType.Machine, null);
+                                       
                                         Console.WriteLine("Mannaggia il cristo");
-                                        _authorized = pc.ValidateCredentials(receivedUserName, password);
-                                        Console.WriteLine("Mannaggia dio");
+                                        //_authorized = Start.pc.ValidateCredentials(receivedUserName, password);
+                                        Console.WriteLine("Mannaggia dio "+_authorized);
 
 
 
