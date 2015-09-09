@@ -1,7 +1,7 @@
 ﻿<Window x:Class="Server.Start"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Start" Height="137.05" Width="390.648">
+        Title="Start" Height="137.05" Width="390.648" Closing="Window_Closing">
     <Grid>
         <TextBox x:Name="Port" HorizontalAlignment="Left" Height="23" Margin="73,44,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="105"/>
         <Label Content="Port" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top"/>

@@ -163,6 +163,24 @@ namespace Server
             }
         }
 
+        public void DeleteShare()
+        {
+            SHARE_TYPE type;
+            DriveInfo[] allDrives = DriveInfo.GetDrives();
+            foreach (DriveInfo d in allDrives)
+            {
+
+                string shareName = d.Name.Replace(":\\", "");
+                string shareDesc = "";
+                string path = d.Name;
+                uint result;
+                if ((result = NetShareDel(null, shareName, 0)) != 0)
+                {
+                    Console.WriteLine("delete result: "+result);
+                }
+            }
+        }
+
         public void AddConnection(object ip)
         {
             var netResource = new NetResource()
@@ -177,7 +195,7 @@ namespace Server
             netResource,
             null,
             null,
-            0x00000004 | 0x00000008 | 0x00000010 | 0x1000);
+            0x00000004 | 0x00000008 | 0x1000);
 
             if (result != 0)
             {

@@ -71,8 +71,10 @@ namespace Server
                     int command;
                     while (_accepting)
                     {
+                        _clipboardManager = new ClipboardManager();
                         _tcpClient = _tcpListener.AcceptTcpClient();
                         _tcpClient.GetStream().ReadTimeout = Timeout.Infinite;
+                        _tcpClient.Client.LingerState = new LingerOption(true,0);
                         SetTcpKeepAlive(_tcpClient.Client, 3000, 1);
                         byte[] clientPublicKey = new byte[72];
                         _tcpClient.GetStream().Read(clientPublicKey, 0, 72);
@@ -156,7 +158,7 @@ namespace Server
                                         _tcpClient.GetStream().Flush();
                                         if (_authorized)
                                         {
-                                            _clipboardManager = new ClipboardManager();
+
                                             Thread t = new Thread(_clipboardManager.InitializeShare);
                                             t.Start();
                                             Thread t1 = new Thread(_clipboardManager.AddConnection);
@@ -165,6 +167,10 @@ namespace Server
                                             SendSAS(false);
                                             Console.WriteLine("bubba");
                                             //_clipboardManager.AddConnection((_tcpClient.Client.RemoteEndPoint as IPEndPoint).Address.ToString());
+                                        }
+                                        else
+                                        {
+                                            _tcpClient.Close();
                                         }
                                         break;
 
@@ -195,6 +201,7 @@ namespace Server
                                                 {
                                                     read += _tcpClient.GetStream().Read(recClip, read, recLen - read);
                                                 }
+                                               
                                                 using (var memStream = new MemoryStream())
                                                 {
                                                     var binForm = new BinaryFormatter();
@@ -298,6 +305,9 @@ namespace Server
                 try
                 {
                     _accepting = false;
+                   
+                    Thread t = new Thread(_clipboardManager.DeleteShare);
+                    t.Start();
                    _tcpListener.Stop();
                     Console.WriteLine("mannaggia il gesuello");
                     Console.WriteLine("Mannaggia il gesuino");
@@ -311,8 +321,17 @@ namespace Server
                     Console.WriteLine("cacca");
                     _tcpListener = null;
                     _server = null;
-                    if(_tcpClient!= null)
+                    if (_tcpClient != null)
+                    {
+                        Console.WriteLine("Il bambinello caga");
+                        _tcpClient.Client.Send(new byte[1]);
+                        _tcpClient.Client.Shutdown(SocketShutdown.Receive);
+                        _tcpClient.Client.Close();
+                        Console.WriteLine("Il bambinello ha fatto la close");
+                        _tcpClient.GetStream().Dispose();
                         _tcpClient.Close();
+                        Console.WriteLine("Il bambinello ha fatto la close la vendetta");
+                    }
                 }
                 catch (Exception e)
                 {

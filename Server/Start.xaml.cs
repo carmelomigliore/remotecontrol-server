@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Application = System.Windows.Application;
 
 namespace Server
 {
@@ -50,16 +51,26 @@ namespace Server
                 Window.Show();
                 start.Content = "Stop";
                 Port.IsReadOnly = true;
-                _trayIcon.ShowBalloonTip(5000,"Remote control", "The server now accepts connections", ToolTipIcon.Info);
+               // _trayIcon.ShowBalloonTip(500,"Remote control", "The server now accepts connections", ToolTipIcon.Info);
             }
             else if (Window != null)
             {
                Window.Stop();
                 Window.Close();
-               _trayIcon.ShowBalloonTip(5000, "Rremote control", "The server is now stopped", ToolTipIcon.Info);
+               //_trayIcon.ShowBalloonTip(500, "Rremote control", "The server is now stopped", ToolTipIcon.Info);
                 start.Content = "Start";
                 Port.IsReadOnly = false;
                 Window = null;
+            }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (Window != null)
+            {
+                Window.Stop();
+                _trayIcon.Visible = false;
+                Application.Current.Shutdown();
             }
         }
     }
